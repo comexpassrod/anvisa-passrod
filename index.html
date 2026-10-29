@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PASSROD · Registros ANVISA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#07080c; --bg2:#0d0f16; --card:#12141d; --card2:#171a25;
+ --line:#242938; --line2:#2f3549;
+ --tx:#eef1f8; --tx2:#9aa4bd; --tx3:#6b7590;
+ --cy:#22d3ee; --mg:#f038ff; --lm:#a3ff12; --or:#ff8a1f; --rd:#ff2d55; --vi:#8b5cf6;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+ background:var(--bg);color:var(--tx);line-height:1.45;-webkit-font-smoothing:antialiased;
+ background-image:radial-gradient(circle at 12% -8%,rgba(34,211,238,.13),transparent 42%),
+                  radial-gradient(circle at 88% 4%,rgba(240,56,255,.11),transparent 40%)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 44px}
+header{position:relative;padding:30px 0 26px;margin-bottom:24px;overflow:hidden;
+ border-bottom:1px solid var(--line)}
+header:before{content:"";position:absolute;inset:0;
+ background:linear-gradient(115deg,rgba(34,211,238,.14),rgba(139,92,246,.10) 45%,rgba(240,56,255,.13));}
+header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+ background:linear-gradient(90deg,var(--cy),var(--vi),var(--mg),var(--lm))}
+header .wrap{position:relative;padding-bottom:0}
+.h-tag{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:var(--cy)}
+.h-title{font-size:29px;font-weight:800;letter-spacing:-.7px;margin:7px 0 5px;
+ background:linear-gradient(92deg,#fff 12%,#b7f5ff 55%,#ffd6ff 95%);
+ -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.h-sub{font-size:13px;color:var(--tx2)}
+.h-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}
+.chip{background:rgba(255,255,255,.045);border:1px solid var(--line2);border-radius:20px;
+ padding:5px 13px;font-size:11.5px;color:var(--tx2);font-weight:500}
+.chip b{color:var(--tx);font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:1080px){.kpis{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{position:relative;overflow:hidden;border-radius:12px;padding:14px 14px;
+ background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line)}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tx3);
+ box-shadow:0 0 16px 0 currentColor}
+.kpi.b:before{background:var(--cy);color:var(--cy)}
+.kpi.g:before{background:var(--lm);color:var(--lm)}
+.kpi.a:before{background:var(--or);color:var(--or)}
+.kpi.r:before{background:var(--rd);color:var(--rd)}
+.kpi.v:before{background:var(--vi);color:var(--vi)}
+.kpi.m:before{background:var(--mg);color:var(--mg)}
+.kpi-l{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);line-height:1.3}
+.kpi-v{font-size:27px;font-weight:800;letter-spacing:-1.1px;margin:5px 0 2px;color:#fff;
+ font-variant-numeric:tabular-nums}
+.kpi.b .kpi-v{color:#7defff}.kpi.g .kpi-v{color:#c8ff6b}
+.kpi.a .kpi-v{color:#ffb264}.kpi.r .kpi-v{color:#ff6b8a}
+.kpi.v .kpi-v{color:#bda4ff}.kpi.m .kpi-v{color:#fa9cff}
+.kpi-s{font-size:10.5px;color:var(--tx3)}
+.kpi-d{font-size:11px;font-weight:700;margin-top:4px}
+.up{color:var(--or)}.down{color:var(--lm)}.flat{color:var(--tx3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+ padding:19px 21px;margin-bottom:15px}
+.card h2{font-size:13.5px;font-weight:800;color:#fff;letter-spacing:-.1px}
+.card h2:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;
+ background:var(--cy);margin-right:9px;vertical-align:middle;box-shadow:0 0 9px var(--cy)}
+.card .desc{font-size:11.5px;color:var(--tx3);margin:4px 0 15px}
+.grid2{display:grid;grid-template-columns:1.55fr 1fr;gap:15px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.lg-wrap{margin-top:13px}
+.lg{display:flex;align-items:center;gap:9px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line)}
+.lg:last-child{border-bottom:0}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
+.lg-l{flex:1;color:var(--tx2)}
+.lg-v{font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.lg-p{width:40px;text-align:right;color:var(--tx3);font-size:11px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);
+ font-weight:800;padding:9px 10px;border-bottom:1px solid var(--line2);background:var(--bg2);
+ white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--tx2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:rgba(34,211,238,.045);color:var(--tx)}
+td.num{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.reg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;
+ color:var(--cy);white-space:nowrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:11px;font-size:10px;font-weight:800;
+ white-space:nowrap;border:1px solid transparent}
+.p-i{background:rgba(34,211,238,.13);color:#67e8f9;border-color:rgba(34,211,238,.3)}
+.p-ii{background:rgba(139,92,246,.16);color:#c4b5fd;border-color:rgba(139,92,246,.34)}
+.p-iii{background:rgba(255,138,31,.14);color:#fdba74;border-color:rgba(255,138,31,.32)}
+.p-iv{background:rgba(255,45,85,.15);color:#fda4b4;border-color:rgba(255,45,85,.34)}
+.p-ok{background:rgba(163,255,18,.13);color:#c8ff6b;border-color:rgba(163,255,18,.3)}
+.p-no{background:rgba(255,45,85,.15);color:#fda4b4;border-color:rgba(255,45,85,.34)}
+.p-warn{background:rgba(255,138,31,.14);color:#fdba74;border-color:rgba(255,138,31,.32)}
+.mv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));border-radius:10px;
+ overflow:hidden;border:1px solid var(--line);margin-bottom:16px;background:var(--card)}
+.mv-i{padding:14px 17px;border-right:1px solid var(--line)}
+.mv-i:last-child{border-right:0}
+.mv-l{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);font-weight:800}
+.mv-v{font-size:20px;font-weight:800;color:#fff;margin-top:3px;font-variant-numeric:tabular-nums}
+.mv-s{font-size:10.5px;color:var(--tx3);margin-top:2px}
+.note{font-size:11.5px;color:var(--tx3);margin-top:11px;padding-top:11px;border-top:1px solid var(--line)}
+.note b{color:var(--tx)}
+.alert{background:rgba(139,92,246,.075);border:1px solid rgba(139,92,246,.28);
+ border-left:3px solid var(--vi);border-radius:10px;padding:14px 17px;font-size:12.5px;
+ color:#cfc4f5;margin-bottom:16px;line-height:1.62}
+.alert b{color:#fff}
+footer{text-align:center;font-size:10.5px;color:var(--tx3);padding:24px 0 0;line-height:1.8}
+.sub-h{font-size:12px;font-weight:800;color:#fff;margin:16px 0 9px}
+.empty{padding:24px;text-align:center;color:var(--tx3);font-size:12px;background:var(--bg2);border-radius:9px}
+.grid3{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:15px}
+@media(max-width:980px){.grid3{grid-template-columns:1fr}}
+.fbar{display:flex;flex-wrap:wrap;gap:11px;align-items:flex-end}
+.f-item{display:flex;flex-direction:column;gap:5px;min-width:130px}
+.f-item.fgrow{flex:1;min-width:230px}
+.f-item.fres{flex-direction:row;align-items:center;gap:10px;margin-left:auto}
+.f-item label{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--tx3)}
+.f-item input,.f-item select{background:var(--bg2);border:1px solid var(--line2);border-radius:8px;
+ color:var(--tx);font-size:12.5px;padding:9px 12px;font-family:inherit;outline:none;width:100%}
+.f-item select{cursor:pointer;padding-right:28px;-webkit-appearance:none;appearance:none;
+ background-image:linear-gradient(45deg,transparent 50%,var(--cy) 50%),linear-gradient(135deg,var(--cy) 50%,transparent 50%);
+ background-position:calc(100% - 15px) 51%,calc(100% - 10px) 51%;background-size:5px 5px,5px 5px;
+ background-repeat:no-repeat}
+.f-item input:focus,.f-item select:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
+.f-item input::placeholder{color:var(--tx3)}
+#f-limpar{background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:8px;
+ color:var(--tx2);font-size:11.5px;font-weight:700;padding:9px 14px;cursor:pointer;font-family:inherit;
+ white-space:nowrap;transition:.15s}
+#f-limpar:hover{border-color:var(--cy);color:var(--cy);background:rgba(34,211,238,.1)}
+#f-geral{font-size:11.5px;font-weight:700;color:var(--cy);white-space:nowrap}
+.f-note{font-size:11px;color:var(--tx3);margin-top:11px}
+.cnt{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:10px;font-size:10.5px;
+ font-weight:800;background:rgba(34,211,238,.14);color:#7defff;vertical-align:middle;
+ border:1px solid rgba(34,211,238,.28);font-variant-numeric:tabular-nums}
+button.mais{display:block;width:100%;margin-top:13px;padding:10px 14px;border-radius:9px;
+ background:rgba(255,255,255,.03);border:1px dashed var(--line2);color:var(--tx2);
+ font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;letter-spacing:.02em}
+button.mais:hover{border-color:var(--cy);color:var(--cy);background:rgba(34,211,238,.09);border-style:solid}
+button.mais.aberto{border-style:solid;border-color:rgba(34,211,238,.35);color:var(--cy)}
+tr[style*="none"]{display:none}
+@media print{body{background:#fff;color:#111}header{background:#111!important;-webkit-print-color-adjust:exact}
+ .card{break-inside:avoid;background:#fff;border-color:#ccc}}
+</style></head><body>
+<header><div class="wrap">
+<div class="h-tag">Passarini Group · Operações</div>
+<div class="h-title">Registros ANVISA — PASSROD</div>
+<div class="h-sub">PASSROD IMPORTAÇÃO E EXPORTAÇÃO DE PRODUTOS PARA SAÚDE LTDA · CNPJ 26.185.222/0001-10</div>
+<div class="h-meta">
+<span class="chip">Carga ANVISA: <b>12/10/2026</b></span>
+<span class="chip">Atualizado em: <b>29/10/2026</b></span>
+<span class="chip">Fonte: Dados Abertos ANVISA</span>
+</div></div></header>
+
+<div class="wrap">
+
+<div class="kpis">
+<div class="kpi b"><div class="kpi-l">Registros válidos</div><div class="kpi-v">855</div><div class="kpi-s">de 954 no CNPJ</div></div>
+<div class="kpi g"><div class="kpi-l">Notificações I e II</div><div class="kpi-v">694</div><div class="kpi-s">validade indeterminada</div></div>
+<div class="kpi v"><div class="kpi-l">Registros III e IV</div><div class="kpi-v">161</div><div class="kpi-s">161 vigentes · 0 vencidos</div></div>
+<div class="kpi a"><div class="kpi-l">Revalidação aberta</div><div class="kpi-v">1</div><div class="kpi-s">janela legal em curso agora</div></div>
+<div class="kpi m"><div class="kpi-l">Próximas revalidações</div><div class="kpi-v">160</div><div class="kpi-s">janela abre nos próximos meses</div></div>
+<div class="kpi r"><div class="kpi-l">Situação inválida</div><div class="kpi-v">99</div><div class="kpi-s">89 com cancelamento</div></div>
+<div class="kpi g"><div class="kpi-l">CBPF válidas</div><div class="kpi-v">32</div><div class="kpi-s">de 107 certificações</div></div>
+</div>
+
+<div class="card"><h2>Movimento desde a última atualização</h2><div class="desc">Primeira carga do dashboard</div><div class="empty">A partir da próxima atualização, este bloco mostra quantos registros entraram, saíram e a variação dos indicadores.</div></div>
+
+<div class="grid3">
+<div class="card">
+<h2>Vencimentos dos registros III e IV</h2>
+<div class="desc">Únicos com prazo — base para o planejamento de revalidações</div>
+<svg viewBox="0 0 620 260" role="img" style="width:100%;height:auto;display:block"><line x1="44" y1="220.0" x2="608" y2="220.0" stroke="#242938" stroke-width="1"/><text x="36" y="224.0" text-anchor="end" font-size="10" fill="#6b7590">0</text><line x1="44" y1="170.5" x2="608" y2="170.5" stroke="#242938" stroke-width="1"/><text x="36" y="174.5" text-anchor="end" font-size="10" fill="#6b7590">10</text><line x1="44" y1="121.0" x2="608" y2="121.0" stroke="#242938" stroke-width="1"/><text x="36" y="125.0" text-anchor="end" font-size="10" fill="#6b7590">20</text><line x1="44" y1="71.5" x2="608" y2="71.5" stroke="#242938" stroke-width="1"/><text x="36" y="75.5" text-anchor="end" font-size="10" fill="#6b7590">30</text><line x1="44" y1="22.0" x2="608" y2="22.0" stroke="#242938" stroke-width="1"/><text x="36" y="26.0" text-anchor="end" font-size="10" fill="#6b7590">40</text><rect x="54.7" y="190.3" width="35.0" height="29.7" rx="3" fill="#22d3ee"/><text x="72.2" y="185.3" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">6</text><text x="72.2" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2027</text><rect x="111.1" y="175.4" width="35.0" height="44.5" rx="3" fill="#22d3ee"/><text x="128.6" y="170.4" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">9</text><text x="128.6" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2028</text><rect x="167.5" y="195.2" width="35.0" height="24.8" rx="3" fill="#22d3ee"/><text x="185.0" y="190.2" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">5</text><text x="185.0" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2029</text><rect x="223.9" y="126.0" width="35.0" height="94.0" rx="3" fill="#22d3ee"/><text x="241.4" y="121.0" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">19</text><text x="241.4" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2030</text><rect x="280.3" y="175.4" width="35.0" height="44.5" rx="3" fill="#22d3ee"/><text x="297.8" y="170.4" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">9</text><text x="297.8" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2031</text><rect x="336.7" y="195.2" width="35.0" height="24.8" rx="3" fill="#22d3ee"/><text x="354.2" y="190.2" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">5</text><text x="354.2" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2032</text><rect x="393.1" y="155.7" width="35.0" height="64.3" rx="3" fill="#22d3ee"/><text x="410.6" y="150.7" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">13</text><text x="410.6" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2033</text><rect x="449.5" y="86.3" width="35.0" height="133.7" rx="3" fill="#22d3ee"/><text x="467.0" y="81.3" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">27</text><text x="467.0" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2034</text><rect x="505.9" y="81.4" width="35.0" height="138.6" rx="3" fill="#22d3ee"/><text x="523.4" y="76.4" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">28</text><text x="523.4" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2035</text><rect x="562.3" y="22.0" width="35.0" height="198.0" rx="3" fill="#22d3ee"/><text x="579.8" y="17.0" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">40</text><text x="579.8" y="244" text-anchor="middle" font-size="10" fill="#9aa4bd">2036</text><line x1="44" y1="220" x2="608" y2="220" stroke="#2f3549" stroke-width="1"/></svg>
+</div>
+<div class="card">
+<h2>Carteira por classe de risco</h2>
+<div class="desc">Todos os registros do CNPJ</div>
+<svg viewBox="0 0 230 230" role="img" style="width:100%;max-width:230px;height:auto;display:block;margin:0 auto"><circle cx="115.0" cy="115.0" r="94.0" fill="none" stroke="#242938" stroke-width="30"/><circle cx="115.0" cy="115.0" r="94.0" fill="none" stroke="#a3ff12" stroke-width="30" stroke-dasharray="170.25 590.62" stroke-dashoffset="-0.00" transform="rotate(-90 115.0 115.0)"/><circle cx="115.0" cy="115.0" r="94.0" fill="none" stroke="#22d3ee" stroke-width="30" stroke-dasharray="308.93 590.62" stroke-dashoffset="-170.25" transform="rotate(-90 115.0 115.0)"/><circle cx="115.0" cy="115.0" r="94.0" fill="none" stroke="#ff8a1f" stroke-width="30" stroke-dasharray="94.72 590.62" stroke-dashoffset="-479.18" transform="rotate(-90 115.0 115.0)"/><circle cx="115.0" cy="115.0" r="94.0" fill="none" stroke="#ff2d55" stroke-width="30" stroke-dasharray="16.72 590.62" stroke-dashoffset="-573.90" transform="rotate(-90 115.0 115.0)"/><text x="115.0" y="113.0" text-anchor="middle" font-size="26" font-weight="800" fill="#ffffff">954</text><text x="115.0" y="133.0" text-anchor="middle" font-size="10" fill="#9aa4bd">registros</text></svg>
+<div class="lg-wrap"><div class="lg"><span class="dot" style="background:#a3ff12"></span><span class="lg-l">Classe I</span><span class="lg-v">275</span><span class="lg-p">29%</span></div><div class="lg"><span class="dot" style="background:#22d3ee"></span><span class="lg-l">Classe II</span><span class="lg-v">499</span><span class="lg-p">52%</span></div><div class="lg"><span class="dot" style="background:#ff8a1f"></span><span class="lg-l">Classe III</span><span class="lg-v">153</span><span class="lg-p">16%</span></div><div class="lg"><span class="dot" style="background:#ff2d55"></span><span class="lg-l">Classe IV</span><span class="lg-v">27</span><span class="lg-p">3%</span></div></div>
+</div>
+<div class="card">
+<h2>Publicações de deferimento por ano</h2>
+<div class="desc">Evolução das regularizações da PASSROD no DOU</div>
+<svg viewBox="0 0 620 210" role="img" style="width:100%;height:auto;display:block"><line x1="44" y1="170.0" x2="608" y2="170.0" stroke="#242938" stroke-width="1"/><text x="36" y="174.0" text-anchor="end" font-size="10" fill="#6b7590">0</text><line x1="44" y1="133.0" x2="608" y2="133.0" stroke="#242938" stroke-width="1"/><text x="36" y="137.0" text-anchor="end" font-size="10" fill="#6b7590">45</text><line x1="44" y1="96.0" x2="608" y2="96.0" stroke="#242938" stroke-width="1"/><text x="36" y="100.0" text-anchor="end" font-size="10" fill="#6b7590">90</text><line x1="44" y1="59.0" x2="608" y2="59.0" stroke="#242938" stroke-width="1"/><text x="36" y="63.0" text-anchor="end" font-size="10" fill="#6b7590">135</text><line x1="44" y1="22.0" x2="608" y2="22.0" stroke="#242938" stroke-width="1"/><text x="36" y="26.0" text-anchor="end" font-size="10" fill="#6b7590">180</text><rect x="57.4" y="124.8" width="43.7" height="45.2" rx="3" fill="#a3ff12"/><text x="79.2" y="119.8" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">55</text><text x="79.2" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2019</text><rect x="127.9" y="51.6" width="43.7" height="118.4" rx="3" fill="#a3ff12"/><text x="149.8" y="46.6" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">144</text><text x="149.8" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2020</text><rect x="198.4" y="85.3" width="43.7" height="84.7" rx="3" fill="#a3ff12"/><text x="220.2" y="80.3" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">103</text><text x="220.2" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2021</text><rect x="268.9" y="122.3" width="43.7" height="47.7" rx="3" fill="#a3ff12"/><text x="290.8" y="117.3" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">58</text><text x="290.8" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2022</text><rect x="339.4" y="82.8" width="43.7" height="87.2" rx="3" fill="#a3ff12"/><text x="361.2" y="77.8" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">106</text><text x="361.2" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2023</text><rect x="409.9" y="82.0" width="43.7" height="88.0" rx="3" fill="#a3ff12"/><text x="431.8" y="77.0" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">107</text><text x="431.8" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2024</text><rect x="480.4" y="42.6" width="43.7" height="127.4" rx="3" fill="#a3ff12"/><text x="502.2" y="37.6" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">155</text><text x="502.2" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2025</text><rect x="550.9" y="22.0" width="43.7" height="148.0" rx="3" fill="#a3ff12"/><text x="572.8" y="17.0" text-anchor="middle" font-size="10" fill="#eef1f8" font-weight="700">180</text><text x="572.8" y="194" text-anchor="middle" font-size="10" fill="#9aa4bd">2026</text><line x1="44" y1="170" x2="608" y2="170" stroke="#2f3549" stroke-width="1"/></svg>
+</div>
+</div>
+
+<div class="card fbar-card" id="filtros">
+<h2>Consultar e filtrar</h2>
+<div class="desc">A busca vale para todas as listagens · classe e ano valem para os registros de produtos (ano = validade para III/IV, publicação para I/II)</div>
+<div class="fbar">
+<div class="f-item fgrow"><label for="f-busca">Buscar</label>
+<input id="f-busca" type="search" placeholder="produto, nº de registro ou fabricante…"></div>
+<div class="f-item"><label for="f-classe">Classe de risco</label>
+<select id="f-classe"><option value="T">Todas</option><option value="I">Classe I</option><option value="II">Classe II</option><option value="III">Classe III</option><option value="IV">Classe IV</option></select></div>
+<div class="f-item"><label for="f-ano">Ano</label>
+<select id="f-ano"><option value="T">Todos</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option></select></div>
+<div class="f-item fres"><span id="f-geral">—</span><button id="f-limpar" type="button">Limpar</button></div>
+</div>
+<noscript><div class="f-note">Os filtros usam JavaScript — sem ele, as listagens completas continuam visíveis abaixo.</div></noscript>
+</div>
+
+<div class="card">
+<h2>Revalidações a acompanhar <span class="cnt" id="cnt-reval">161</span></h2>
+<div class="desc">1 com janela aberta · 160 com janela futura · exibindo as 10 primeiras</div>
+<table id="tb-reval" data-limite="10"><thead><tr><th>Registro</th><th>Produto</th><th style="text-align:center">Classe</th>
+<th style="text-align:center">Vence em</th><th style="text-align:center">Janela abre</th><th style="text-align:center">Janela fecha</th></tr></thead>
+<tbody></tbody></table>
+<button class="mais" type="button" data-alvo="tb-reval" data-total="161">Ver as 161 revalidações</button>
+</div>
+
+<div class="card">
+<h2>Notificações de classes I e II <span class="cnt" id="cnt-notif">694</span></h2>
+<div class="desc">694 registros com validade indeterminada · não exigem revalidação · as 10 publicações mais recentes</div>
+<table id="tb-notif" data-limite="10"><thead><tr><th>Registro</th><th>Produto</th><th style="text-align:center">Classe</th>
+<th style="text-align:center">Publicação</th><th style="text-align:center">Validade</th></tr></thead>
+<tbody></tbody></table>
+<button class="mais" type="button" data-alvo="tb-notif" data-total="694">Ver todas as 694 notificações</button>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h2>CBPF válidas — fabricantes no exterior <span class="cnt" id="cnt-cbpf">32</span></h2>
+<div class="desc">32 certificações vigentes de 107 · 1 vence em 90 dias</div>
+<table id="tb-cbpf"><thead><tr><th>Fabricante</th><th>País</th><th style="text-align:center">Validade</th>
+<th style="text-align:center">Faltam</th></tr></thead>
+<tbody></tbody></table>
+</div>
+<div class="card">
+<h2>Autorizações de funcionamento (AFE)</h2>
+<div class="desc">Habilitações ativas em Ribeirão Preto/SP</div>
+<table><thead><tr><th>Autorização</th><th>Área</th><th>Atividades autorizadas</th><th style="text-align:center">Status</th></tr></thead>
+<tbody><tr><td class="reg">4000740</td><td>Cosmético</td><td style="font-size:11.5px">Armazenar, Expedir, Importar</td><td class="num"><span class="pill p-ok">SIM</span></td></tr><tr><td class="reg">8150479</td><td>Dispositivos Médicos</td><td style="font-size:11.5px">Armazenar, Distribuir, Expedir, Importar</td><td class="num"><span class="pill p-ok">SIM</span></td></tr><tr><td class="reg">3080708</td><td>Saneantes</td><td style="font-size:11.5px">Armazenar, Expedir, Importar</td><td class="num"><span class="pill p-ok">SIM</span></td></tr></tbody></table>
+</div>
+</div>
+
+<div class="card">
+<h2>Como funciona o prazo na ANVISA</h2>
+<div class="desc">RDC 751/2022 — dois regimes distintos, e só um deles tem data de vencimento</div>
+<div class="alert" style="background:rgba(34,211,238,.07);border-color:rgba(34,211,238,.26);border-left-color:var(--cy);color:#b8e6ef">
+<b>Classes I e II — notificação, validade indeterminada.</b> Não vencem e não passam por
+revalidação (art. 6º da RDC 751/2022). A data que aparece na base de dados abertos é o prazo de
+5 anos do antigo <b>registro</b> da RDC 185/2001, herdado quando esses produtos viraram cadastro
+(RDC 40/2015, art. 13, que dispensou a revalidação) — <b>não deve ser tratada como vencimento</b>.
+<br><br>
+<b>Classes III e IV — registro, validade de 10 anos</b> a partir da publicação no DOU, revalidável por
+iguais períodos (art. 7º e art. 11). O pedido de revalidação deve ser feito <b>entre 1 ano e 6 meses
+antes do vencimento</b>. É esse o único prazo que exige ação.
+</div>
+<div class="note">Situação atual: <b>161 registros</b> de classes III/IV —
+<b>161</b> vigentes (nenhum vencido) e <b>1</b> com a janela de
+revalidação aberta neste momento.</div>
+</div>
+
+<footer>
+Fonte: Dados Abertos ANVISA — TA_CONSULTA_PRODUTOS_SAUDE, TA_CONSULTA_CBPF e TA_CONSULTA_FUNCIONAMENTO_EMPRESA_NACIONAL.<br>
+Carga ETL da ANVISA: 12/10/2026 · Atualização mensal pela ANVISA (até o dia 15) · Dashboard gerado em 29/10/2026.
+</footer>
+</div>
+<script src="dados.js"></script>
+<script>
+(function(){
+  var BLOB=window.ANVISA_BLOB;
+  function b64ToBytes(b64){
+    var bin=atob(b64), n=bin.length, out=new Uint8Array(n);
+    for(var i=0;i<n;i++) out[i]=bin.charCodeAt(i);
+    return out;
+  }
+  function norm(s){
+    return (s||'').toString().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+  // colunas que recebem data-ano: indice 3 nas duas primeiras tabelas
+  function anoDe(id, cels){
+    var i = 3;   // data de validade (reval) / publicacao (notif)
+    var m = /([0-9]{4})$/.exec(cels[i]||'');
+    return m?m[1]:'';
+  }
+  function montaLinha(id, cels, idx){
+    var tr=document.createElement('tr');
+    tr.setAttribute('data-idx', idx);
+    if(id==='tb-reval'||id==='tb-notif'){
+      tr.setAttribute('data-classe', cels[2]||'');
+      tr.setAttribute('data-ano', anoDe(id, cels));
+      tr.setAttribute('data-texto', norm((cels[1]||'')+' '+(cels[0]||'')));
+    } else {
+      tr.setAttribute('data-texto', norm((cels[0]||'')+' '+(cels[1]||'')));
+    }
+    cels.forEach(function(txt, i){
+      var td=document.createElement('td');
+      if(i===0) td.className='reg';
+      else if(i>=2) td.className='num';
+      var p=/^(I|II|III|IV)$/.test(txt)?'p-'+txt.toLowerCase():null;
+      if(txt==='Indeterminada'||txt==='SIM') p='p-ok';
+      if(p){
+        var sp=document.createElement('span');
+        sp.className='pill '+p; sp.textContent=txt; td.appendChild(sp);
+      } else {
+        td.textContent=txt;
+      }
+      tr.appendChild(td);
+    });
+    return tr;
+  }
+  function render(id, chave){
+    var tb=document.getElementById(id); if(!tb) return;
+    var corpo=tb.tBodies[0]; if(!corpo) return;
+    var linhas=JSON.parse(DADOS[chave]);
+    var frag=document.createDocumentFragment();
+    linhas.forEach(function(cels, i){ frag.appendChild(montaLinha(id, cels, i)); });
+    corpo.appendChild(frag);
+  }
+  var DADOS;
+  function boot(){
+    render('tb-reval','r'); render('tb-notif','n'); render('tb-cbpf','c');
+    document.dispatchEvent(new CustomEvent('dados-prontos'));
+  }
+  if(typeof DecompressionStream==='undefined'){
+    document.addEventListener('DOMContentLoaded', function(){
+      var aviso=document.createElement('div');
+      aviso.className='f-note';
+      aviso.textContent='Seu navegador nao suporta a descompressao dos dados. Use um navegador atualizado.';
+      var alvo=document.getElementById('filtros');
+      if(alvo) alvo.appendChild(aviso);
+    });
+    return;
+  }
+  var bytes=b64ToBytes(BLOB);
+  var ds=new DecompressionStream('gzip');
+  var stream=new Blob([bytes]).stream().pipeThrough(ds);
+  new Response(stream).text().then(function(txt){
+    try { DADOS=JSON.parse(txt); boot(); }
+    catch(e) { console.error('falha ao ler dados', e); }
+  });
+})();
+</script>
+<script data-filtros>
+(function(){
+  var busca=document.getElementById('f-busca'),
+      classe=document.getElementById('f-classe'),
+      ano=document.getElementById('f-ano'),
+      geral=document.getElementById('f-geral'),
+      limpar=document.getElementById('f-limpar');
+  if(!busca) return;
+
+  function norm(s){
+    return (s||'').toString().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+  var alvos=[
+    {tb:'tb-reval', cnt:'cnt-reval'},
+    {tb:'tb-notif', cnt:'cnt-notif'}
+  ];
+  var soBusca=['tb-cbpf'];
+  var expandido={};
+  function limiteDe(id, filtrando){
+    var tb=document.getElementById(id);
+    if(!tb) return Infinity;
+    if(filtrando) return Infinity;
+    if(expandido[id]) return Infinity;
+    var l=parseInt(tb.getAttribute('data-limite')||'0',10);
+    return l>0?l:Infinity;
+  }
+
+  function aplica(){
+    var q=norm(busca.value.trim()), c=classe.value, a=ano.value, total=0, visiveis=0;
+
+    alvos.forEach(function(alvo){
+      var tb=document.getElementById(alvo.tb); if(!tb) return;
+      var filtrando = (q!=='' || c!=='T' || a!=='T');
+      var corpo=tb.tBodies[0], n=0, mostrados=0, lim=limiteDe(alvo.tb, filtrando);
+      Array.prototype.forEach.call(corpo.rows, function(tr){
+        if(!tr.hasAttribute('data-texto')) return;
+        total++;
+        var ok=true;
+        if(q && tr.getAttribute('data-texto').indexOf(q)===-1) ok=false;
+        if(ok && c!=='T' && (tr.getAttribute('data-classe')||'')!==c) ok=false;
+        if(ok && a!=='T' && (tr.getAttribute('data-ano')||'')!==a) ok=false;
+        if(ok){
+          n++;
+          var cabe = mostrados < lim;
+          tr.style.display = cabe ? '' : 'none';
+          if(cabe){ mostrados++; visiveis++; }
+        } else {
+          tr.style.display = 'none';
+        }
+      });
+      var el=document.getElementById(alvo.cnt);
+      if(el) el.textContent = n;
+    });
+
+    soBusca.forEach(function(id){
+      var tb=document.getElementById(id); if(!tb) return;
+      var corpo=tb.tBodies[0], n=0;
+      Array.prototype.forEach.call(corpo.rows, function(tr){
+        if(!tr.hasAttribute('data-texto')) return;
+        var ok = !q || tr.getAttribute('data-texto').indexOf(q)!==-1;
+        tr.style.display = ok ? '' : 'none';
+        if(ok) n++;
+      });
+      var el=document.getElementById('cnt-cbpf');
+      if(el) el.textContent = n;
+    });
+
+    var ativo = (q||c!=='T'||a!=='T');
+    geral.textContent = ativo ? (visiveis+' de '+total+' registros') : ('');
+    geral.className = ativo ? 'fg-ativo' : '';
+  }
+
+  [busca,classe,ano].forEach(function(el){
+    el.addEventListener('input', aplica);
+    el.addEventListener('change', aplica);
+  });
+  limpar.addEventListener('click', function(){
+    busca.value=''; classe.value='T'; ano.value='T';
+    expandido={};
+    document.querySelectorAll('button.mais').forEach(function(b){
+      b.textContent = b.getAttribute('data-rotulo') || b.textContent;
+      b.classList.remove('aberto');
+    });
+    aplica(); busca.focus();
+  });
+
+  document.querySelectorAll('button.mais').forEach(function(btn){
+    btn.setAttribute('data-rotulo', btn.textContent);
+    btn.addEventListener('click', function(){
+      var id=btn.getAttribute('data-alvo');
+      expandido[id]=!expandido[id];
+      btn.classList.toggle('aberto', !!expandido[id]);
+      btn.textContent = expandido[id] ? 'Mostrar apenas as 10' : btn.getAttribute('data-rotulo');
+      aplica();
+    });
+  });
+
+  aplica();
+  document.addEventListener('dados-prontos', function(){ aplica(); });
+})();
+</script>
+</body></html>
